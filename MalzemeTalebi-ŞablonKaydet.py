@@ -188,10 +188,10 @@ input_gerekce.send_keys("Bu talep otomasyonla oluşturulmuştur.")  # Gerekçe o
 driver.implicitly_wait(10)  # Değerin yazılması için bekler.
 time.sleep(2)  # Değerin yazılması için bekler.
 
-# "Kaydet" butonuna tıklamak için:
-button = driver.find_element(By.XPATH, "//button[.//span[text()='Kaydet']]")
+# "Şablon Kaydet" butonuna tıklamak için:
+button = driver.find_element(By.XPATH, "//button[.//span[text()='Şablon Kaydet']]")
 button.click()
-time.sleep(2)  # Kaydetme işleminin tamamlanması için bekler.
+time.sleep(2)  # Şablon Kaydetme işleminin tamamlanması için bekler.
 
 # "Confirm" butonuna tıklamak için:
 button = driver.find_element(By.XPATH, "//button[@type='button' and .//span[text()='Evet']]")
@@ -200,37 +200,38 @@ time.sleep(2)  # Onaylama işleminin tamamlanması için bekler.
 print("Talep başarıyla oluşturuldu.")  # Başarılı bir şekilde talep oluşturulduğunu bildirir.
 time.sleep(2)  # Onaylama işleminin tamamlanması için bekler.
 
-# "İşlemler" butonuna tıklamak için:
-driver.find_element(By.XPATH, "//button[.//div[contains(text(), 'İşlemler')]]").click()
-time.sleep(1)  # İşlemler menüsünün açılması için bekler.
-
-# Açılan menüdeki "Düzenle" seçeneğine tıklamak için:
-driver.find_element(By.XPATH, "//div[@role='menuitem' and text()='Düzenle']").click()
-time.sleep(1)  # Düzenleme işleminin başlaması için bekler.
-
-# "Gerekçe" inputuna metin yazmak için:
-input_gerekce = driver.find_element(By.NAME, "malzemeler[0].gerekce")
-# Gerekirse readonly/disabled kaldır
-driver.execute_script("arguments[0].removeAttribute('readonly')", input_gerekce)
-driver.execute_script("arguments[0].removeAttribute('disabled')", input_gerekce)
-# JS ile temizle
-driver.execute_script("arguments[0].value = '';", input_gerekce)
-driver.execute_script("arguments[0].dispatchEvent(new Event('input'));", input_gerekce)
-time.sleep(1)  # Temizleme işleminin tamamlanması için bekler.
-input_gerekce.send_keys("Bu talep düzenlenmiştir.")  # Gerekçe olarak "Bu talep düzenlenmiştir." yazılır.
+# "Yeni Ekle" butonuna tıklamak için:
+driver.find_element(By.XPATH, "//button[.//text()[contains(., 'Yeni Ekle')]]").click()
 driver.implicitly_wait(10)  # Değerin yazılması için bekler.
-time.sleep(2)  # Değerin yazılması için bekler.
+time.sleep(1)  # Yeni talep formunun açılması için bekler.
 
-# "Kaydet" butonuna tıklamak için:
-button = driver.find_element(By.XPATH, "//button[.//span[text()='Kaydet']]")
-button.click()
-time.sleep(2)  # Kaydetme işleminin tamamlanması için bekler.
+# "Talep Tipi" dropdown menüsünden "Şablon Seç" seçeneğini seçmek için:
+driver.find_element(By.XPATH, "//*[contains(text(), 'Şablon Seç') and @role='menuitem']").click()
+driver.implicitly_wait(10)  # Değerin yazılması için bekler.
+time.sleep(1)  # Dropdown'un açılması için bekler.
 
-# "Confirm" butonuna tıklamak için:
-button = driver.find_element(By.XPATH, "//button[@type='button' and .//span[text()='Evet']]")
-button.click()
-print("Talep başarıyla düzenlendi.")  # Başarılı bir şekilde talep düzenlendiğini bildirir.
-time.sleep(2)  # Onaylama işleminin tamamlanması için bekler.
+# "Seçim yapınız" dropdown'unun bulunduğu alanı bekle
+wait.until(EC.visibility_of_element_located(
+    (By.XPATH, "//div[contains(@class, 'css-ju9thq-control')]")
+))
+time.sleep(0.5)  # Stil animasyonları için kısa bekleme
+
+# Dropdown input alanını bekle ve tıkla
+dropdown_input = wait.until(EC.element_to_be_clickable(
+    (By.XPATH, "//input[contains(@id,'react-select') and @type='text']")
+))
+dropdown_input.click()
+time.sleep(0.5)  # Tıklamadan sonra input aktifleşsin
+# İlgili değeri yaz
+dropdown_input.send_keys(Keys.ARROW_DOWN)  # İlk öneriyi seçmek için aşağı ok tuşuna bas
+time.sleep(1)  # Önerilerin gelmesi için bekle
+dropdown_input.send_keys(Keys.ENTER)
+time.sleep(2)
+
+# "Seç" butonunu bul ve tıkla
+sec_buton = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Seç']")))
+sec_buton.click()
+time.sleep(3)  # Menü açılmasını bekle
 
 driver.quit()  # Tarayıcıyı kapatır.
 # Not: Bu kod, Selenium WebDriver ile bir web uygulamasına giriş yapmayı, belirli bir modülü açmayı ve form doldurmayı otomatikleştirir.

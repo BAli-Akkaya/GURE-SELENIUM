@@ -9,22 +9,23 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.select import Select
 import time
+import datetime
 import sys
 import io
 
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-
-
-# options = Options()
-# options.add_experimental_option("detach", True)  # Tarayıcı açık kalsın
-
+# -*- coding: utf-8 -*-
+# Bu kod, Selenium WebDriver kullanarak bir web uygulamasına giriş yapmayı, belirli bir modülü açmayı ve form doldurmayı otomatikleştirir.
+# WebDriver ayarları
 service = Service(executable_path="chromedriver.exe")
 driver = webdriver.Chrome(service=service)
 driver.maximize_window()
 driver.get("https://stage.gurerp.com/login")
 driver.implicitly_wait(10)  # Sayfanın yüklenmesi için bekler.
-
+# Sayfanın Türkçe karakterlerle düzgün yüklendiğinden emin olmak için:
+driver.page_source.encode('iso-8859-9').decode('utf-8')
+today = datetime.date.today().strftime("%d-%m-%Y")  # Bugünün tarihi formatlanır.
 
 # Giriş bilgilerini doldur
 driver.find_element(By.NAME, "userName").send_keys("ali.akkaya")  # Kullanıcı adını yazar.
@@ -67,8 +68,8 @@ driver.find_element(By.XPATH, "//button[.//text()[contains(., 'Yeni Ekle')]]").c
 driver.implicitly_wait(10)  # Değerin yazılması için bekler.
 time.sleep(1)  # Yeni talep formunun açılması için bekler.
 
-# "Talep Tipi" dropdown menüsünden "Malzeme" seçeneğini seçmek için:
-driver.find_element(By.XPATH, "//*[contains(text(), 'Malzeme') and @role='menuitem']").click()
+# "Talep Tipi" dropdown menüsünden "Hizmet" seçeneğini seçmek için:
+driver.find_element(By.XPATH, "//*[contains(text(), 'Hizmet') and @role='menuitem']").click()
 driver.implicitly_wait(10)  # Değerin yazılması için bekler.
 time.sleep(1)  # Dropdown'un açılması için bekler.
 
@@ -95,23 +96,23 @@ time.sleep(1)  # Seçimin yapılması için bekler.
 # Stok Açıklama alanına metin yazmak için:
 wait = WebDriverWait(driver, 10)
 input_aciklama = wait.until(EC.presence_of_element_located((By.NAME, "malzemeler[0].detayAciklama")))
-input_aciklama.send_keys("Stok açıklaması")
+input_aciklama.send_keys("Hizmet açıklaması")
 driver.implicitly_wait(10)  # Değerin yazılması için bekler.
 time.sleep(1)  # Değerin yazılması için bekler.
 
 # "Miktar" inputuna metin yazmak için:
 input_miktar = driver.find_element(By.NAME, "malzemeler[0].miktar")
 input_miktar.clear()  # Önceki değeri temizler.
-input_miktar.send_keys("100")  # Miktar olarak 100 yazılır.
+input_miktar.send_keys("0")  # Miktar olarak 0 yazılır.
 driver.implicitly_wait(10)  # Değerin yazılması için bekler.
-
 time.sleep(1)  # Değerin yazılması için bekler.
 
 # Dropdown'u aç
-dropdown_input = wait.until(EC.element_to_be_clickable((By.XPATH, "//input[@id='react-select-5-input']")))
+dropdown_input = wait.until(EC.element_to_be_clickable((By.XPATH, "//input[@id='react-select-6-input']")))
 dropdown_input.click()
 # İstersen bir şey yazabilirsin, boş bırakıp sadece açabilirsin
 dropdown_input.send_keys("01.17.170.9320")  # veya bir şey yaz
+time.sleep(1)  # Değerin yazılması için bekler.
 # İlk seçeneği seçmek için Enter tuşuna bas
 dropdown_input.send_keys(Keys.ENTER)
 time.sleep(1)  # Seçimin yapılması için bekler.
@@ -119,12 +120,21 @@ time.sleep(1)  # Seçimin yapılması için bekler.
 # "Birim Yaklaşık Maliyet" inputuna metin yazmak için:
 input_birim_fiyat = driver.find_element(By.NAME, "malzemeler[0].birimFiyat")
 input_birim_fiyat.clear()  # Önceki değeri temizler.
-input_birim_fiyat.send_keys("10000")  # Birim fiyat olarak 10000 yazılır.
+input_birim_fiyat.send_keys("1000000")  # Birim fiyat olarak 1000000 yazılır.
 driver.implicitly_wait(10)  # Değerin yazılması için bekler.
 time.sleep(1)  # Değerin yazılması için bekler.
 
-# "İl seçiniz" dropdown'unu açmak için:
+# "Para Birimi seçiniz" dropdown'unu açmak için:
 dropdown_input = wait.until(EC.element_to_be_clickable((By.XPATH, "//input[@id='react-select-7-input']")))
+dropdown_input.click()
+# İstersen bir şey yazabilirsin, boş bırakıp sadece açabilirsin
+dropdown_input.send_keys("TRY")  # veya bir şey yaz
+# İlk seçeneği seçmek için Enter tuşuna bas
+dropdown_input.send_keys(Keys.ENTER)
+time.sleep(1)  # Seçimin yapılması için bekler.
+
+# "İl seçiniz" dropdown'unu açmak için:
+dropdown_input = wait.until(EC.element_to_be_clickable((By.XPATH, "//input[@id='react-select-8-input']")))
 dropdown_input.click()
 # İstersen bir şey yazabilirsin, boş bırakıp sadece açabilirsin
 dropdown_input.send_keys("Konya")  # veya bir şey yaz
@@ -133,7 +143,7 @@ dropdown_input.send_keys(Keys.ENTER)
 time.sleep(1)  # Seçimin yapılması için bekler.
 
 # "İlçe seçiniz" dropdown'unu açmak için:
-dropdown_input = wait.until(EC.element_to_be_clickable((By.XPATH, "//input[@id='react-select-8-input']")))
+dropdown_input = wait.until(EC.element_to_be_clickable((By.XPATH, "//input[@id='react-select-9-input']")))
 dropdown_input.click()
 # İstersen bir şey yazabilirsin, boş bırakıp sadece açabilirsin
 dropdown_input.send_keys("Meram")  # veya bir şey yaz
@@ -161,7 +171,7 @@ driver.implicitly_wait(10)  # Değerin yazılması için bekler.
 time.sleep(1)  # Değerin yazılması için bekler.
 
 # Doğrudan Temin dropdown'unu açmak için:
-dropdown_input = wait.until(EC.element_to_be_clickable((By.XPATH, "//input[@id='react-select-10-input']")))
+dropdown_input = wait.until(EC.element_to_be_clickable((By.XPATH, "//input[@id='react-select-11-input']")))
 dropdown_input.click()
 # İsterseniz bir şey yazabilir veya Enter ile seçim yapabilirsiniz
 dropdown_input.send_keys("Hayır")  # veya bir şey yaz
@@ -172,15 +182,29 @@ time.sleep(2)
 driver.execute_script("window.scrollBy(200, 0);")  # 200 px sağa kaydırır
 time.sleep(1)  # Ekranın kaydırılması için bekler.
 
-# Alım Tipi (İşletme) dropdown'unu açmak için:
+# Dropdown input alanını bekle ve tıklanabilir olunca tıkla
 dropdown_input = wait.until(
-    EC.element_to_be_clickable((By.XPATH, "//input[@id='react-select-13-input']"))
+    EC.element_to_be_clickable((By.XPATH, "//div[contains(@class, 'css-yxkkaz-control')]//input[@id='react-select-14-input']"))
 )
-# İstersen bir şey yazabilirsin, boş bırakıp sadece açabilirsin
-dropdown_input.send_keys("İşletme")  # veya bir şey yaz
-# İlk seçeneği seçmek için Enter tuşuna bas
+dropdown_input.click()
+time.sleep(0.5)  # Menü açılması için bekle
+# Arama metni gir (opsiyonel)
+dropdown_input.send_keys("İşletme")  # Veya başka bir metin, veya boş
+time.sleep(0.5)  # Önerilerin yüklenmesini bekle
+# Enter ile ilk öneriyi seç
 dropdown_input.send_keys(Keys.ENTER)
 time.sleep(2)  # Seçimin yapılması için bekler.
+
+# Başlangıç tarihi inputunu seçmek için:
+start_date_input = wait.until(EC.presence_of_element_located((By.XPATH, "(//td[contains(@class, 'MuiTableCell-root')]//input[@type='date'])[1]")))
+start_date_input.send_keys(today)  # Bugünün tarihi yazılır.
+time.sleep(2)  # Başlangıç tarihinin seçilmesi için bekler.
+
+# Bitiş tarihi inputunu seçmek için:
+next_year = (datetime.date.today().replace(year=datetime.date.today().year + 1)).strftime("%d-%m-%Y")
+end_date_input = wait.until(EC.presence_of_element_located((By.XPATH, "(//td[contains(@class, 'MuiTableCell-root')]//input[@type='date'])[2]")))
+end_date_input.send_keys(next_year)  # Gelecek yılın tarihi yazılır.
+time.sleep(2)  # Bitiş tarihinin seçilmesi için bekler.
 
 # "Gerekçe" inputuna metin yazmak için:
 input_gerekce = driver.find_element(By.NAME, "malzemeler[0].gerekce")
@@ -188,49 +212,51 @@ input_gerekce.send_keys("Bu talep otomasyonla oluşturulmuştur.")  # Gerekçe o
 driver.implicitly_wait(10)  # Değerin yazılması için bekler.
 time.sleep(2)  # Değerin yazılması için bekler.
 
-# "Kaydet" butonuna tıklamak için:
-button = driver.find_element(By.XPATH, "//button[.//span[text()='Kaydet']]")
+# "Şablon Kaydet" butonuna tıklamak için:
+button = driver.find_element(By.XPATH, "//button[.//span[text()='Şablon Kaydet']]")
 button.click()
-time.sleep(2)  # Kaydetme işleminin tamamlanması için bekler.
+time.sleep(2)  # Şablon kaydetme işleminin tamamlanması için bekler.
 
 # "Confirm" butonuna tıklamak için:
 button = driver.find_element(By.XPATH, "//button[@type='button' and .//span[text()='Evet']]")
 button.click()
+time.sleep(1)  # Onaylama işleminin tamamlanması için bekler.
+print("Şablon başarıyla oluşturuldu.")  # Başarılı bir şekilde talep oluşturulduğunu bildirir.
 time.sleep(2)  # Onaylama işleminin tamamlanması için bekler.
-print("Talep başarıyla oluşturuldu.")  # Başarılı bir şekilde talep oluşturulduğunu bildirir.
-time.sleep(2)  # Onaylama işleminin tamamlanması için bekler.
 
-# "İşlemler" butonuna tıklamak için:
-driver.find_element(By.XPATH, "//button[.//div[contains(text(), 'İşlemler')]]").click()
-time.sleep(1)  # İşlemler menüsünün açılması için bekler.
-
-# Açılan menüdeki "Düzenle" seçeneğine tıklamak için:
-driver.find_element(By.XPATH, "//div[@role='menuitem' and text()='Düzenle']").click()
-time.sleep(1)  # Düzenleme işleminin başlaması için bekler.
-
-# "Gerekçe" inputuna metin yazmak için:
-input_gerekce = driver.find_element(By.NAME, "malzemeler[0].gerekce")
-# Gerekirse readonly/disabled kaldır
-driver.execute_script("arguments[0].removeAttribute('readonly')", input_gerekce)
-driver.execute_script("arguments[0].removeAttribute('disabled')", input_gerekce)
-# JS ile temizle
-driver.execute_script("arguments[0].value = '';", input_gerekce)
-driver.execute_script("arguments[0].dispatchEvent(new Event('input'));", input_gerekce)
-time.sleep(1)  # Temizleme işleminin tamamlanması için bekler.
-input_gerekce.send_keys("Bu talep düzenlenmiştir.")  # Gerekçe olarak "Bu talep düzenlenmiştir." yazılır.
+# "Yeni Ekle" butonuna tıklamak için:
+driver.find_element(By.XPATH, "//button[.//text()[contains(., 'Yeni Ekle')]]").click()
 driver.implicitly_wait(10)  # Değerin yazılması için bekler.
-time.sleep(2)  # Değerin yazılması için bekler.
+time.sleep(1)  # Yeni talep formunun açılması için bekler.
 
-# "Kaydet" butonuna tıklamak için:
-button = driver.find_element(By.XPATH, "//button[.//span[text()='Kaydet']]")
-button.click()
-time.sleep(2)  # Kaydetme işleminin tamamlanması için bekler.
+# "Talep Tipi" dropdown menüsünden "Şablon Seç" seçeneğini seçmek için:
+driver.find_element(By.XPATH, "//*[contains(text(), 'Şablon Seç') and @role='menuitem']").click()
+driver.implicitly_wait(10)  # Değerin yazılması için bekler.
+time.sleep(1)  # Dropdown'un açılması için bekler.
 
-# "Confirm" butonuna tıklamak için:
-button = driver.find_element(By.XPATH, "//button[@type='button' and .//span[text()='Evet']]")
-button.click()
-print("Talep başarıyla düzenlendi.")  # Başarılı bir şekilde talep düzenlendiğini bildirir.
-time.sleep(2)  # Onaylama işleminin tamamlanması için bekler.
+# "Seçim yapınız" dropdown'unun bulunduğu alanı bekle
+wait.until(EC.visibility_of_element_located(
+    (By.XPATH, "//div[contains(@class, 'css-ju9thq-control')]")
+))
+time.sleep(0.5)  # Stil animasyonları için kısa bekleme
 
+# Dropdown input alanını bekle ve tıkla
+dropdown_input = wait.until(EC.element_to_be_clickable(
+    (By.XPATH, "//input[contains(@id,'react-select') and @type='text']")
+))
+dropdown_input.click()
+time.sleep(0.5)  # Tıklamadan sonra input aktifleşsin
+# İlgili değeri yaz
+dropdown_input.send_keys(Keys.ARROW_DOWN)  # İlk öneriyi seçmek için aşağı ok tuşuna bas
+time.sleep(1)  # Önerilerin gelmesi için bekle
+dropdown_input.send_keys(Keys.ENTER)
+time.sleep(2)
+
+# "Seç" butonunu bul ve tıkla
+sec_buton = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Seç']")))
+sec_buton.click()
+time.sleep(3)  # Menü açılmasını bekle
+
+# Tarayıcıyı kapat
 driver.quit()  # Tarayıcıyı kapatır.
 # Not: Bu kod, Selenium WebDriver ile bir web uygulamasına giriş yapmayı, belirli bir modülü açmayı ve form doldurmayı otomatikleştirir.
