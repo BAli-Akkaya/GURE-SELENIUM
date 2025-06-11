@@ -58,70 +58,32 @@ driver.implicitly_wait(10)  # Değerin yazılması için bekler.
 time.sleep(1)  # İş Emri sekmesinin yüklenmesi için bekler.
 
 # "Tanımlamalar" modülünde "Grup" başlığına tıkla
-buton = driver.find_element(By.XPATH, "//button[normalize-space(text())='Grup']")
+buton = driver.find_element(By.XPATH, "//button[normalize-space(text())='Tür']")
 buton.click()
 driver.implicitly_wait(10)  # Değerin yazılması için bekler.
 time.sleep(1)  # Grup sekmesinin yüklenmesi için bekler.
 
-# "Grup" sayfasında "Yeni Ekle" başlığına tıkla
-yeni_ekle_buton = driver.find_element(By.XPATH, "//button[.//span[normalize-space(text())='Yeni Ekle']]")
-yeni_ekle_buton.click()
-driver.implicitly_wait(10)  # Değerin yazılması için bekler.
-time.sleep(1)  # Yeni Ekle sekmesinin yüklenmesi için bekler.
-
-# Grup sayacını al ve bir sonraki grup numarasını oluştur
-def get_next_group_number(file_path="grup_sayac.txt"):
-    try:
-        with open(file_path, "r") as file:
-            sayac = int(file.read())
-    except FileNotFoundError:
-        sayac = 1  # Dosya yoksa 1 ile başla
-
-    with open(file_path, "w") as file:
-        file.write(str(sayac + 1))
-
-    return sayac
-
-
-# Grup numarasını al ve grup adını oluştur
-grup_numarasi = get_next_group_number()
-grup_adi = f"Test Grubu {grup_numarasi}"
-
-# "Grup Adı" alanına metin gir
-input_grup_adi = driver.find_element(By.XPATH, "//input[@id='input-Grup Adı']")
-input_grup_adi.send_keys(grup_adi)
-
-# Seçim yapınız yazan alanı tıkla
-dropdown = driver.find_element(By.ID, "isEmriTurId")
-dropdown.click()
-time.sleep(1)  # Menü açılmasını bekle
-# Açılan listeden bir seçenek tıkla (örneğin: "Satın Alma")
-option = driver.find_element(By.XPATH, "//div[contains(@class,'option') and text()='Satın Alma']")  # Burada 'Satın Alma' seçeneğini seçiyoruz
-driver.implicitly_wait(10)  # Değerin yazılması için bekler.
-option.click()
-time.sleep(1)  # Seçimin yapılması için bekler.
-
-wait = WebDriverWait(driver, 10)  # 10 saniye bekleme süresi
-
-# Eğer bir seçim yapıldıysa, "Kaydet" butonuna tıkla
-kaydet_btn = wait.until(
-    EC.element_to_be_clickable((By.XPATH, "//button[normalize-space(text())='Kaydet']"))
-)
-kaydet_btn.click()
-time.sleep(2)  # Kaydetme işleminin tamamlanması için bekler.
-# Eğer "Kaydet" butonu tıklanırsa, başarılı bir şekilde kaydedildi mesajını gösterir.
 
 # Eğer bir seçim yapıldıysa, "İşlemler" butonuna tıkla
 wait = WebDriverWait(driver, 10)
-menu_button = driver.find_element(By.CSS_SELECTOR, "button[id='radix-:r24:']")
+# Daha stabil bir XPATH veya CSS seçici kullanın
+menu_button = wait.until(EC.element_to_be_clickable((
+    By.XPATH,
+    "//button[.//span[text()='Open menu']]"
+)))
 menu_button.click()
-time.sleep(1)  # Menü açılmasını bekler
+time.sleep(1)  # Menü açılmasını bekler.
 
-# Açılan menüden "Düzenle" seçeneği çıkana kadar bekle ve tıkla
-duzenle_btn = wait.until(
-    EC.element_to_be_clickable((By.XPATH, "//div[@role='menuitem' and text()='Düzenle']"))
+# 'Düzenle' menü öğesini bekle ve tıkla
+edit_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//div[@role='menuitem' and text()='Pasif Yap']")))
+edit_button.click()
+time.sleep(2)  # Kaydetme işleminin tamamlanması için bekler.
+
+# "Evet" butonunu bekle ve tıkla
+evet_button = WebDriverWait(driver, 10).until(
+    EC.element_to_be_clickable((By.XPATH, "//button[text()='Evet']"))
 )
-duzenle_btn.click()
-
+evet_button.click()
+time.sleep(2)  # Evet butonunun tıklanması için bekler.
 
 driver.quit()  # Tarayıcıyı kapatır.
