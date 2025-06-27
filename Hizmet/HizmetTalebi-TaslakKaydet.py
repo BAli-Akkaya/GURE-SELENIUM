@@ -8,6 +8,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.select import Select
+from webdriver_manager.chrome import ChromeDriverManager  # EKLENDİ
 import time
 import sys
 import io
@@ -17,7 +18,7 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 # -*- coding: utf-8 -*-
 # Bu kod, Selenium WebDriver kullanarak bir web uygulamasına giriş yapmayı, belirli bir modülü açmayı ve form doldurmayı otomatikleştirir.
 # WebDriver ayarları
-service = Service(executable_path="chromedriver.exe")
+service = Service(ChromeDriverManager().install())  # ChromeDriverManager ile otomatik olarak ChromeDriver'ı indirir ve kurar.
 driver = webdriver.Chrome(service=service)
 driver.maximize_window()
 driver.get("https://stage.gurerp.com/login")

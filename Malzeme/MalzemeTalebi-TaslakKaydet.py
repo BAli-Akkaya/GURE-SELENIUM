@@ -7,7 +7,9 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.select import Select
+from webdriver_manager.chrome import ChromeDriverManager  # EKLENDİ
 import time
 import sys
 import io
@@ -19,7 +21,7 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 # options = Options()
 # options.add_experimental_option("detach", True)  # Tarayıcı açık kalsın
 
-service = Service(executable_path="chromedriver.exe")
+service = Service(ChromeDriverManager().install())  # ChromeDriverManager ile otomatik olarak ChromeDriver'ı indirir ve kurar.
 driver = webdriver.Chrome(service=service)
 driver.maximize_window()
 driver.get("https://stage.gurerp.com/login")

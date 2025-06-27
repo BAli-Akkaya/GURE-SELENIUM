@@ -2,6 +2,9 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from webdriver_manager.chrome import ChromeDriverManager  # EKLENDİ
 import time
 
 # Tarayıcı ayarları
@@ -9,7 +12,7 @@ options = Options()
 options.add_experimental_option("detach", True)  # Tarayıcı açık kalsın
 
 # Tarayıcı başlat
-service = Service(executable_path="chromedriver.exe")
+service = Service(ChromeDriverManager().install())  # ChromeDriverManager ile otomatik olarak ChromeDriver'ı indirir ve kurar.
 driver = webdriver.Chrome(service=service)
 
 # Hedef siteye git
