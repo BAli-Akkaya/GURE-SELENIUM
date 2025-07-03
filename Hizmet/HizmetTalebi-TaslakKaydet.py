@@ -95,7 +95,7 @@ time.sleep(1)  # Seçimin yapılması için bekler.
 # Stok Açıklama alanına metin yazmak için:
 wait = WebDriverWait(driver, 10)
 input_aciklama = wait.until(EC.presence_of_element_located((By.NAME, "malzemeler[0].detayAciklama")))
-input_aciklama.send_keys("Hizmet açıklaması")
+input_aciklama.send_keys("Hizmet açıklaması")  # Açıklama olarak "Hizmet açıklaması" yazılır.
 driver.implicitly_wait(10)  # Değerin yazılması için bekler.
 time.sleep(1)  # Değerin yazılması için bekler.
 
