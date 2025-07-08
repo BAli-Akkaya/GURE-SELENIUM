@@ -44,3 +44,11 @@ def main():
 
 if __name__ == "__main__":
     main()
+# Bu kod, Selenium kullanarak bir web sitesine giriş yapmayı ve belirli bir modüle geçiş yapmayı otomatikleştirir.
+# Giriş işlemi sırasında kullanıcı adı, şifre ve gizlilik politikası onayı gibi bilgileri kullanır.
+# Ayrıca, ChromeDriver'ı otomatik olarak indirip kurmak için `webdriver_manager` kütüphanesini kullanır.
+# Bu sayede, ChromeDriver'ın doğru sürümünü manuel olarak indirme ihtiyacını ortadan kaldırır.
+# Kod, giriş işlemi başarılı olduktan sonra "Satın Alma" modülüne geçiş yapar ve ardından tarayıcıyı kapatır.
+# Bu, web otomasyonu için yaygın bir kullanım senaryosudur ve test otomasyonu   i veya web uygulamalarının etkileşimli testleri için kullanılabilir.
+# Kodun sonunda, `main()` fonksiyonu çağrılarak tüm işlemler başlatılır.
+# Bu, kodun modüler ve okunabilir olmasını sağlar.

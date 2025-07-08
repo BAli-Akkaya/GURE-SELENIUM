@@ -7,6 +7,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager    
 import time
 
+
 class LoginAutomation:
     def __init__(self):
         self.service = Service(ChromeDriverManager().install())
@@ -61,3 +62,7 @@ class LoginAutomation:
     def close(self):
         self.driver.quit()
 
+def main():
+    automation = LoginAutomation()
+    automation.run_tests()
+    automation.close()
