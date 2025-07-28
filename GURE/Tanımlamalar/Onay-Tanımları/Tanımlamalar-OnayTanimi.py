@@ -48,7 +48,7 @@ time.sleep(1)
 driver.find_element(By.XPATH, "//button[.//span[normalize-space(text())='Yeni Ekle']]").click()
 time.sleep(1)
 
-# Grup numarası
+# Onay Adı
 def get_next_group_number(file_path="grup_sayac.txt"):
     try:
         with open(file_path, "r") as file:
@@ -61,26 +61,34 @@ def get_next_group_number(file_path="grup_sayac.txt"):
 
 grup_numarasi = get_next_group_number()
 grup_adi = f"Test Onay Tanımı {grup_numarasi}"
-driver.find_element(By.XPATH, "//input[@id='input-Onay Tanımı Adı']").send_keys(grup_adi)
+driver.find_element(By.XPATH, "//input[@id='input-Onay Adı']").send_keys(grup_adi)
 
-# Süreç Seçimi
-dropdown_input = wait.until(EC.element_to_be_clickable((By.XPATH, "//div[contains(@class, 'css-5rvhb9')]//input[@type='text']")))
-dropdown_input.click()
-dropdown_input.send_keys("Yeni Malzeme Talebi")
+# İş Emri Seçimi (React Select)
+dropdown_input = wait.until(EC.element_to_be_clickable((By.ID, "react-select-2-input")))
+dropdown_input.send_keys("Malzeme Alımı")
 time.sleep(1)
 dropdown_input.send_keys(Keys.ENTER)
 time.sleep(1)
 
-# Süreç Türü
+# Masraf Merkezi Seçimi
+masrafmerkezi_secimi = wait.until(EC.element_to_be_clickable((By.ID, "masrafMerkezi-2")))
+masrafmerkezi_secimi.click()
+time.sleep(1)
+
+
+# Çıkış Kararı
 surec_dropdown = wait.until(EC.element_to_be_clickable((By.ID, "react-select-3-input")))
 surec_dropdown.click()
-surec_dropdown.send_keys("Malzeme")
+surec_dropdown.send_keys("Satınalma")
 surec_dropdown.send_keys(Keys.ENTER)
 time.sleep(1)
 
-# Açıklama
-aciklama_input = wait.until(EC.element_to_be_clickable((By.XPATH, "//textarea[@id='input-Açıklama']")))
-aciklama_input.send_keys(f"Bu, {grup_adi} için oluşturulan bir test iş emridir.")
+# Alım Tipini Seç
+alimtipi_dropdown = wait.until(EC.element_to_be_clickable((By.ID, "react-select-4-input")))
+alimtipi_dropdown.click()
+alimtipi_dropdown.send_keys("İşletme")
+alimtipi_dropdown.send_keys(Keys.ENTER)
+time.sleep(1)
 
 # Kaydet
 kaydet_btn = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[normalize-space(text())='Kaydet']")))
@@ -95,17 +103,16 @@ edit_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//div[@role='men
 edit_button.click()
 time.sleep(1)
 
-# İş Emri adı değiştir
-input_grup_adi = driver.find_element(By.XPATH, "//input[@id='input-İş Emri Adı']")
-input_grup_adi.clear()
-input_grup_adi.send_keys(f"Yeni İş Emri Adı {grup_numarasi}")
+# Onay Tanımı adı değiştir
+grup_numarasi = get_next_group_number()
+grup_adi = f"Test Onay Tanımı {grup_numarasi}"
+driver.find_element(By.XPATH, "//input[@id='input-Onay Adı']").send_keys(grup_adi)
 
 # Kaydet
 kaydet_btn = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[normalize-space(text())='Kaydet']")))
 kaydet_btn.click()
 time.sleep(2)
 
-print("İş Emri başarıyla oluşturuldu") # Sonuç mesajı
-
-
+print("Onay Tanımı başarıyla oluşturuldu") # Sonuç mesajı
+print("Onay Tanımı başarıyla düzenlendi") # Düzenleme mesajı
 driver.quit()
