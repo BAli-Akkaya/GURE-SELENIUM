@@ -59,7 +59,7 @@ driver.implicitly_wait(10)  # Değerin yazılması için bekler.
 time.sleep(1)  # İş Emri sekmesinin yüklenmesi için bekler.
 
 # "Tanımlamalar" modülünde "Grup" başlığına tıkla
-driver.find_element(By.XPATH, "//button[normalize-space(text())='İş Emirleri']").click()
+driver.find_element(By.XPATH, "//button[normalize-space(text())='Onay Tanımı']").click()
 time.sleep(1)  # Değerin yazılması için bekler.
 
 
@@ -85,6 +85,6 @@ evet_button = WebDriverWait(driver, 10).until(
 evet_button.click()
 time.sleep(2)  # Evet butonunun tıklanması için bekler.
 
-print("İş Emri başarıyla pasif yapıldı")  # Sonuç mesajı
+print("Onay Tanımı başarıyla pasif yapıldı")  # Sonuç mesajı
 
 driver.quit()  # Tarayıcıyı kapatır.

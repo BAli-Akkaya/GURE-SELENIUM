@@ -52,52 +52,75 @@ driver.find_element(By.XPATH, "//button[.//text()[contains(., 'Tanımlamalar')]]
 driver.implicitly_wait(10)  # Değerin yazılması için bekler.
 time.sleep(1)  # Tanımlamalar modülünün yüklenmesi için bekler.
 
-# "Tanımlamalar" modülünde "İş Emri" başlığına tıkla
-buton = driver.find_element(By.XPATH, "//button[normalize-space(text())='İş Emri']")
+# "Tanımlamalar" modülünde "Dosya Tipi" başlığına tıkla
+buton = driver.find_element(By.XPATH, "//button[normalize-space(text())='Dosya Tipi']")
 buton.click()
 driver.implicitly_wait(10)  # Değerin yazılması için bekler.
-time.sleep(1)  # İş Emri sekmesinin yüklenmesi için bekler.
+time.sleep(1)  # Dosya Tipi sekmesinin yüklenmesi için bekler.
 
-# "Tanımlamalar" modülünde "Onay Tanımı" başlığına tıkla
-driver.find_element(By.XPATH, "//button[normalize-space(text())='Onay Tanımı']").click()
-time.sleep(1)
+# "Dosya Tipi" sayfasında "Yeni Ekle" başlığına tıkla
+yeni_ekle_buton = driver.find_element(By.XPATH, "//button[.//span[normalize-space(text())='Yeni Ekle']]")
+yeni_ekle_buton.click()
+driver.implicitly_wait(10)  # Değerin yazılması için bekler.
+time.sleep(1)  # Yeni Ekle sekmesinin yüklenmesi için bekler.
 
+# Grup sayacını al ve bir sonraki grup numarasını oluştur
+def get_next_group_number(file_path="grup_sayac.txt"):
+    try:
+        with open(file_path, "r") as file:
+            sayac = int(file.read())
+    except FileNotFoundError:
+        sayac = 1  # Dosya yoksa 1 ile başla
+
+    with open(file_path, "w") as file:
+        file.write(str(sayac + 1))
+
+    return sayac
+
+
+# Grup numarasını al ve grup adını oluştur
+grup_numarasi = get_next_group_number()
+grup_adi = f"Test Dosya Tipi {grup_numarasi}"
+
+# "Dosya Tipi" alanına metin gir
+input_grup_adi = driver.find_element(By.XPATH, "//input[@id='input-Dosya Tipi Adı']")
+input_grup_adi.send_keys(grup_adi)
+
+# Eğer bir seçim yapıldıysa, "Kaydet" butonuna tıkla
+kaydet_btn = wait.until(
+    EC.element_to_be_clickable((By.XPATH, "//button[normalize-space(text())='Kaydet']"))
+)
+kaydet_btn.click()
+time.sleep(2)  # Kaydetme işleminin tamamlanması için bekler.
+# Eğer "Kaydet" butonu tıklanırsa, başarılı bir şekilde kaydedildi mesajını gösterir.
+
+# Eğer bir seçim yapıldıysa, "İşlemler" butonuna tıkla
 wait = WebDriverWait(driver, 10)
-# 1. Silinecek satırı bul (örnek: ilk satır)
-satir = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "div.MuiDataGrid-row[role='row']")))
-
-# 2. Satırdaki bilgileri al
-kayit_bilgisi = {
-    "Onay Adı": satir.find_element(By.CSS_SELECTOR, "div[data-field='onayAdi']").text,
-    "İş Emri Adı": satir.find_element(By.CSS_SELECTOR, "div[data-field='isEmriAdi']").text,
-    "Süreç Türü": satir.find_element(By.CSS_SELECTOR, "div[data-field='surecTuru']").text,
-    "Masraf Merkezi": satir.find_element(By.CSS_SELECTOR, "div[data-field='masrafMerkeziMi']").text,
-    "Çıkış Kararı": satir.find_element(By.CSS_SELECTOR, "div[data-field='cikisKarari']").text,
-    "Ekleme Tarihi": satir.find_element(By.CSS_SELECTOR, "div[data-field='eklemeTarihi']").text,
-    "Güncelleme Tarihi": satir.find_element(By.CSS_SELECTOR, "div[data-field='guncellemeTarihi']").text,
-    "Durum": satir.find_element(By.CSS_SELECTOR, "div[data-field='durum']").text
-}
-
-# 3. Silme işlemi (senin mevcut kodun)
-menu_button = satir.find_element(By.XPATH, ".//button[.//span[text()='Open menu']]")
+# Daha stabil bir XPATH veya CSS seçici kullanın
+menu_button = wait.until(EC.element_to_be_clickable((
+    By.XPATH,
+    "//button[.//span[text()='Open menu']]"
+)))
 menu_button.click()
-time.sleep(1)
+time.sleep(1)  # Menü açılmasını bekler.
 
-sil_button = wait.until(EC.element_to_be_clickable(
-    (By.XPATH, "//div[@role='menuitem' and text()='Sil']")
-))
-sil_button.click()
-time.sleep(1)
+# 'Düzenle' menü öğesini bekle ve tıkla
+edit_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//div[@role='menuitem' and text()='Düzenle']")))
+edit_button.click()
+time.sleep(1)  # Düzenleme sayfasının yüklenmesi için bekler.
 
-evet_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[text()='Evet']")))
-evet_button.click()
-time.sleep(2)
-
-# 4. Silinen kaydın bilgilerini ekrana yazdır
-print("Silinen Kayıt bilgileri:")
-for key, value in kayit_bilgisi.items():
-    print(f"{key}: {value}")
-
-print("Onay Tanımı başarıyla silindi")  # Sonuç mesajı
+# "Dosya Tipi" alanını düzenle
+input_grup_adi = driver.find_element(By.XPATH, "//input[@id='input-Dosya Tipi Adı']")
+input_grup_adi.clear()
+input_grup_adi.send_keys("Yeni Dosya Tipi Adı"+ f" {grup_numarasi}")  # Yeni dosya tipi adını girer.
+# "Kaydet" butonuna tıkla
+kaydet_btn = wait.until(
+    EC.element_to_be_clickable((By.XPATH, "//button[normalize-space(text())='Kaydet']"))
+)
+kaydet_btn.click()
+time.sleep(2)  # Kaydetme işleminin tamamlanması için bekler.
+# Eğer "Kaydet" butonu tıklanırsa, başarılı bir şekilde kaydedildi mesajını gösterir.
+# "Dosya Tipi" sayfasını kapat
+print("Dosya Tipi başarıyla kaydedildi.")
 
 driver.quit()  # Tarayıcıyı kapatır.

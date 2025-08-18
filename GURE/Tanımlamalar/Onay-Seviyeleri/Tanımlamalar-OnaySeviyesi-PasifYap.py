@@ -58,46 +58,33 @@ buton.click()
 driver.implicitly_wait(10)  # Değerin yazılması için bekler.
 time.sleep(1)  # İş Emri sekmesinin yüklenmesi için bekler.
 
-# "Tanımlamalar" modülünde "Onay Tanımı" başlığına tıkla
-driver.find_element(By.XPATH, "//button[normalize-space(text())='Onay Tanımı']").click()
-time.sleep(1)
+# "Tanımlamalar" modülünde "Grup" başlığına tıkla
+driver.find_element(By.XPATH, "//button[normalize-space(text())='Onay Seviyeleri']").click()
+time.sleep(1)  # Değerin yazılması için bekler.
 
+
+# Eğer bir seçim yapıldıysa, "İşlemler" butonuna tıkla
 wait = WebDriverWait(driver, 10)
-# 1. Silinecek satırı bul (örnek: ilk satır)
-satir = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "div.MuiDataGrid-row[role='row']")))
-
-# 2. Satırdaki bilgileri al
-kayit_bilgisi = {
-    "Onay Adı": satir.find_element(By.CSS_SELECTOR, "div[data-field='onayAdi']").text,
-    "İş Emri Adı": satir.find_element(By.CSS_SELECTOR, "div[data-field='isEmriAdi']").text,
-    "Süreç Türü": satir.find_element(By.CSS_SELECTOR, "div[data-field='surecTuru']").text,
-    "Masraf Merkezi": satir.find_element(By.CSS_SELECTOR, "div[data-field='masrafMerkeziMi']").text,
-    "Çıkış Kararı": satir.find_element(By.CSS_SELECTOR, "div[data-field='cikisKarari']").text,
-    "Ekleme Tarihi": satir.find_element(By.CSS_SELECTOR, "div[data-field='eklemeTarihi']").text,
-    "Güncelleme Tarihi": satir.find_element(By.CSS_SELECTOR, "div[data-field='guncellemeTarihi']").text,
-    "Durum": satir.find_element(By.CSS_SELECTOR, "div[data-field='durum']").text
-}
-
-# 3. Silme işlemi (senin mevcut kodun)
-menu_button = satir.find_element(By.XPATH, ".//button[.//span[text()='Open menu']]")
+# Daha stabil bir XPATH veya CSS seçici kullanın
+menu_button = wait.until(EC.element_to_be_clickable((
+    By.XPATH,
+    "//button[.//span[text()='Open menu']]"
+)))
 menu_button.click()
-time.sleep(1)
+time.sleep(1)  # Menü açılmasını bekler.
 
-sil_button = wait.until(EC.element_to_be_clickable(
-    (By.XPATH, "//div[@role='menuitem' and text()='Sil']")
-))
-sil_button.click()
-time.sleep(1)
+# 'Düzenle' menü öğesini bekle ve tıkla
+edit_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//div[@role='menuitem' and text()='Pasif Yap']")))
+edit_button.click()
+time.sleep(2)  # Kaydetme işleminin tamamlanması için bekler.
 
-evet_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[text()='Evet']")))
+# "Evet" butonunu bekle ve tıkla
+evet_button = WebDriverWait(driver, 10).until(
+    EC.element_to_be_clickable((By.XPATH, "//button[text()='Evet']"))
+)
 evet_button.click()
-time.sleep(2)
+time.sleep(2)  # Evet butonunun tıklanması için bekler.
 
-# 4. Silinen kaydın bilgilerini ekrana yazdır
-print("Silinen Kayıt bilgileri:")
-for key, value in kayit_bilgisi.items():
-    print(f"{key}: {value}")
-
-print("Onay Tanımı başarıyla silindi")  # Sonuç mesajı
+print("Onay Seviyesi başarıyla pasif yapıldı")  # Sonuç mesajı
 
 driver.quit()  # Tarayıcıyı kapatır.

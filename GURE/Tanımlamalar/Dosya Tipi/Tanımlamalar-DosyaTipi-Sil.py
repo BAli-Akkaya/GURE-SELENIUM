@@ -52,15 +52,12 @@ driver.find_element(By.XPATH, "//button[.//text()[contains(., 'Tanımlamalar')]]
 driver.implicitly_wait(10)  # Değerin yazılması için bekler.
 time.sleep(1)  # Tanımlamalar modülünün yüklenmesi için bekler.
 
-# "Tanımlamalar" modülünde "İş Emri" başlığına tıkla
-buton = driver.find_element(By.XPATH, "//button[normalize-space(text())='İş Emri']")
+# "Tanımlamalar" modülünde "Dosya Tipi" başlığına tıkla
+buton = driver.find_element(By.XPATH, "//button[normalize-space(text())='Dosya Tipi']")
 buton.click()
 driver.implicitly_wait(10)  # Değerin yazılması için bekler.
-time.sleep(1)  # İş Emri sekmesinin yüklenmesi için bekler.
+time.sleep(1)  # Dosya Tipi sekmesinin yüklenmesi için bekler.
 
-# "Tanımlamalar" modülünde "Onay Tanımı" başlığına tıkla
-driver.find_element(By.XPATH, "//button[normalize-space(text())='Onay Tanımı']").click()
-time.sleep(1)
 
 wait = WebDriverWait(driver, 10)
 # 1. Silinecek satırı bul (örnek: ilk satır)
@@ -68,11 +65,7 @@ satir = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "div.MuiData
 
 # 2. Satırdaki bilgileri al
 kayit_bilgisi = {
-    "Onay Adı": satir.find_element(By.CSS_SELECTOR, "div[data-field='onayAdi']").text,
-    "İş Emri Adı": satir.find_element(By.CSS_SELECTOR, "div[data-field='isEmriAdi']").text,
-    "Süreç Türü": satir.find_element(By.CSS_SELECTOR, "div[data-field='surecTuru']").text,
-    "Masraf Merkezi": satir.find_element(By.CSS_SELECTOR, "div[data-field='masrafMerkeziMi']").text,
-    "Çıkış Kararı": satir.find_element(By.CSS_SELECTOR, "div[data-field='cikisKarari']").text,
+    "Dosya Tipi Adı": satir.find_element(By.CSS_SELECTOR, "div[data-field='dosyaTipiAdi']").text,
     "Ekleme Tarihi": satir.find_element(By.CSS_SELECTOR, "div[data-field='eklemeTarihi']").text,
     "Güncelleme Tarihi": satir.find_element(By.CSS_SELECTOR, "div[data-field='guncellemeTarihi']").text,
     "Durum": satir.find_element(By.CSS_SELECTOR, "div[data-field='durum']").text
@@ -97,7 +90,5 @@ time.sleep(2)
 print("Silinen Kayıt bilgileri:")
 for key, value in kayit_bilgisi.items():
     print(f"{key}: {value}")
-
-print("Onay Tanımı başarıyla silindi")  # Sonuç mesajı
 
 driver.quit()  # Tarayıcıyı kapatır.

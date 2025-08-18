@@ -65,26 +65,37 @@ driver.implicitly_wait(10)  # Değerin yazılması için bekler.
 time.sleep(1)  # Grup sekmesinin yüklenmesi için bekler.
 
 
-# Eğer bir seçim yapıldıysa, "İşlemler" butonuna tıkla
 wait = WebDriverWait(driver, 10)
-# Daha stabil bir XPATH veya CSS seçici kullanın
-menu_button = wait.until(EC.element_to_be_clickable((
-    By.XPATH,
-    "//button[.//span[text()='Open menu']]"
-)))
+# 1. Silinecek satırı bul (örnek: ilk satır)
+satir = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "div.MuiDataGrid-row[role='row']")))
+
+# 2. Satırdaki bilgileri al
+kayit_bilgisi = {
+    "Grup Adı": satir.find_element(By.CSS_SELECTOR, "div[data-field='grupAdi']").text,
+    "Modül Süreç Adı": satir.find_element(By.CSS_SELECTOR, "div[data-field='moduleSurecAdi']").text,
+    "Ekleme Tarihi": satir.find_element(By.CSS_SELECTOR, "div[data-field='eklemeTarihi']").text,
+    "Güncelleme Tarihi": satir.find_element(By.CSS_SELECTOR, "div[data-field='guncellemeTarihi']").text,
+    "Durum": satir.find_element(By.CSS_SELECTOR, "div[data-field='durum']").text
+}
+
+# 3. Silme işlemi (senin mevcut kodun)
+menu_button = satir.find_element(By.XPATH, ".//button[.//span[text()='Open menu']]")
 menu_button.click()
-time.sleep(1)  # Menü açılmasını bekler.
+time.sleep(1)
 
-# 'Düzenle' menü öğesini bekle ve tıkla
-edit_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//div[@role='menuitem' and text()='Sil']")))
-edit_button.click()
-time.sleep(2)  # Kaydetme işleminin tamamlanması için bekler.
+sil_button = wait.until(EC.element_to_be_clickable(
+    (By.XPATH, "//div[@role='menuitem' and text()='Sil']")
+))
+sil_button.click()
+time.sleep(1)
 
-# "Evet" butonunu bekle ve tıkla
-evet_button = WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable((By.XPATH, "//button[text()='Evet']"))
-)
+evet_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[text()='Evet']")))
 evet_button.click()
-time.sleep(2)  # Evet butonunun tıklanması için bekler.
+time.sleep(2)
+
+# 4. Silinen kaydın bilgilerini ekrana yazdır
+print("Silinen Kayıt bilgileri:")
+for key, value in kayit_bilgisi.items():
+    print(f"{key}: {value}")
 
 driver.quit()  # Tarayıcıyı kapatır.

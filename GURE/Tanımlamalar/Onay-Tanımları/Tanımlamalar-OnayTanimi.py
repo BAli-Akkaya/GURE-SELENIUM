@@ -104,9 +104,62 @@ edit_button.click()
 time.sleep(1)
 
 # Onay Tanımı adı değiştir
+input_grup_adi = driver.find_element(By.XPATH, "//input[@id='input-Onay Adı']")
+input_grup_adi.clear()
 grup_numarasi = get_next_group_number()
 grup_adi = f"Test Onay Tanımı {grup_numarasi}"
-driver.find_element(By.XPATH, "//input[@id='input-Onay Adı']").send_keys(grup_adi)
+input_grup_adi.send_keys(grup_adi)
+time.sleep(1)
+
+
+# Çıkış Kararı Seçimi (React Select)
+wait = WebDriverWait(driver, 15)
+
+# 1) CikisKarari control'ünü aç
+control = wait.until(EC.element_to_be_clickable(
+    (By.CSS_SELECTOR, "#cikisKarari [class*='control']")
+))
+control.click()
+
+# 2) Mevcut değer varsa X ile temizle (varsa)
+try:
+    clear_btn = driver.find_element(By.CSS_SELECTOR, "#cikisKarari [class*='clearIndicator']")
+    clear_btn.click()
+except:
+    pass
+
+# 3) Aynı container içindeki input'a yaz
+inp = wait.until(EC.element_to_be_clickable(
+    (By.CSS_SELECTOR, "#cikisKarari input[id*='react-select'][id$='-input']")
+))
+# güvenli temizlik
+inp.send_keys(Keys.CONTROL, "a")
+inp.send_keys(Keys.DELETE)
+
+inp.send_keys("Tedarikci")
+
+# Menü gerçekten açıldı mı? (aria-expanded true olsun)
+wait.until(EC.text_to_be_present_in_element_attribute(
+    (By.CSS_SELECTOR, "#cikisKarari input[id*='react-select'][id$='-input']"),
+    "aria-expanded",
+    "true"
+))
+
+# 4A) Metni birebir eşleşen opsiyonu tıkla (menü portalde olabilir, bu yüzden global arıyoruz)
+option = wait.until(EC.element_to_be_clickable(
+    (By.XPATH, "//div[@role='option' and normalize-space()='Tedarikci']")
+))
+option.click()
+
+# --- Alternatif 4B: İlk filtrelenen opsiyonu seç (↓ + Enter)
+# inp.send_keys(Keys.ARROW_DOWN)
+# inp.send_keys(Keys.ENTER)
+
+# (İsteğe bağlı) seçimin gerçekten yapıldığını doğrula
+selected = wait.until(EC.visibility_of_element_located(
+    (By.CSS_SELECTOR, "#cikisKarari [class*='singleValue']")
+))
+assert selected.text.strip() == "Tedarikci"
 
 # Kaydet
 kaydet_btn = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[normalize-space(text())='Kaydet']")))
