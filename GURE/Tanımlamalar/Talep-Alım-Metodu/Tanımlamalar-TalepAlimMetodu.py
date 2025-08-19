@@ -4,6 +4,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager  # EKLENDİ
+from selenium.webdriver.common.keys import Keys 
+from selenium.common.exceptions import TimeoutException
 import time
 import sys
 import io
@@ -121,6 +123,17 @@ kaydet_btn.click()
 time.sleep(2)  # Kaydetme işleminin tamamlanması için bekler.
 # Eğer "Kaydet" butonu tıklanırsa, başarılı bir şekilde kaydedildi mesajını gösterir.
 # "Alım Metodu" sayfasını kapat
-print("Alım Metodu başarıyla kaydedildi.")
+
+try:
+    # Alert div'ini bekle
+    alert = wait.until(EC.presence_of_element_located((By.XPATH, "//div[@role='alert']//div[last()]")))
+    print("✅ Alert mesajı:", alert.text)
+
+except TimeoutException:
+    print("❌ Alert bulunamadı veya zaman aşımına uğradı")
+
+except Exception as e:
+    print("⚠️ Hata:", str(e))
+
 
 driver.quit()  # Tarayıcıyı kapatır.

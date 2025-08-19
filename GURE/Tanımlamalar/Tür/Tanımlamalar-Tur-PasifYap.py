@@ -4,6 +4,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager  # EKLENDİ
+from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import TimeoutException
 import time
 import sys
 import io
@@ -86,5 +88,16 @@ evet_button = WebDriverWait(driver, 10).until(
 )
 evet_button.click()
 time.sleep(2)  # Evet butonunun tıklanması için bekler.
+
+try:
+    # Alert div'ini bekle
+    alert = wait.until(EC.presence_of_element_located((By.XPATH, "//div[@role='alert']//div[last()]")))
+    print("✅ Alert mesajı:", alert.text)
+
+except TimeoutException:
+    print("❌ Alert bulunamadı veya zaman aşımına uğradı")
+
+except Exception as e:
+    print("⚠️ Hata:", str(e))
 
 driver.quit()  # Tarayıcıyı kapatır.
