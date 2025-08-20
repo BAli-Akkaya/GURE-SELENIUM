@@ -55,11 +55,11 @@ driver.find_element(By.XPATH, "//button[.//text()[contains(., 'Tanımlamalar')]]
 driver.implicitly_wait(10)  # Değerin yazılması için bekler.
 time.sleep(1)  # Tanımlamalar modülünün yüklenmesi için bekler.
 
-# "Tanımlamalar" modülünde "Dosya Tipi" başlığına tıkla
-buton = driver.find_element(By.XPATH, "//button[normalize-space(text())='Dosya Tipi']")
+# "Tanımlamalar" modülünde "Talep Alım Metodu" başlığına tıkla
+buton = driver.find_element(By.XPATH, "//button[normalize-space(text())='Talep Alım Metodu']")
 buton.click()
 driver.implicitly_wait(10)  # Değerin yazılması için bekler.
-time.sleep(1)  # Dosya Tipi sekmesinin yüklenmesi için bekler.
+time.sleep(1)  # Talep Alım Metodu sekmesinin yüklenmesi için bekler.
 
 
 #Filtreleri Gösteri açar

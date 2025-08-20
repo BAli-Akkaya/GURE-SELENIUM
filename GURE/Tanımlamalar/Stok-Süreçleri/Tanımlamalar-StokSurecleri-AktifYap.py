@@ -5,6 +5,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager  # EKLENDİ
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.action_chains import ActionChains
 import time
 import sys
 import io
@@ -55,23 +56,40 @@ driver.find_element(By.XPATH, "//button[.//text()[contains(., 'Tanımlamalar')]]
 driver.implicitly_wait(10)  # Değerin yazılması için bekler.
 time.sleep(1)  # Tanımlamalar modülünün yüklenmesi için bekler.
 
-# "Tanımlamalar" modülünde "Dosya Tipi" başlığına tıkla
-buton = driver.find_element(By.XPATH, "//button[normalize-space(text())='Dosya Tipi']")
+# "Tanımlamalar" modülünde "Stok Süreçleri" başlığına tıkla
+buton = driver.find_element(By.XPATH, "//button[normalize-space(text())='Stok Süreçleri']")
 buton.click()
 driver.implicitly_wait(10)  # Değerin yazılması için bekler.
-time.sleep(1)  # Dosya Tipi sekmesinin yüklenmesi için bekler.
+time.sleep(1)  # Stok Süreçleri sekmesinin yüklenmesi için bekler.
 
 
 #Filtreleri Gösteri açar
 driver.find_element(By.XPATH, "//button[normalize-space(.)='FİLTRELERİ GÖSTER']").click()
 time.sleep(1)  # Filtrelerin açılması için bekler.
 #Durum filtresi açılır
-# Dropdown (Tümü) elementini bul ve tıkla
-dropdown = wait.until(EC.element_to_be_clickable((By.XPATH, "//div[@id='select-is-admin']")))
-dropdown.click()
-# Pasif seçeneğini bul ve tıkla
-pasif_secenek = wait.until(EC.element_to_be_clickable((By.XPATH, "//li[normalize-space(.)='Pasif']")))
-pasif_secenek.click()
+
+wait = WebDriverWait(driver, 10)
+
+
+# 3️⃣ Dropdown elementini bul
+dropdown = wait.until(EC.visibility_of_element_located((By.ID, "select-is-admin")))
+
+# 4️⃣ ActionChains ile dropdown sağ yarısına tıkla
+action = ActionChains(driver)
+width = dropdown.size['width']
+height = dropdown.size['height']
+action.move_to_element_with_offset(dropdown, width*0.75, height*0.5).click().perform()
+
+# 5️⃣ Pasif seçeneğini bul
+pasif_option = wait.until(EC.visibility_of_element_located(
+    (By.XPATH, "//li[contains(text(),'Pasif')] | //div[@role='option' and text()='Pasif']")
+))
+
+# 6️⃣ JS ile tıkla (click intercept hatasını önler)
+driver.execute_script("arguments[0].click();", pasif_option)
+
+print("Dropdown Pasif olarak seçildi")
+
 
 time.sleep(1)  # Pasif seçeneğinin seçilmesi için bekler.
 
