@@ -72,13 +72,11 @@ wait = WebDriverWait(driver, 10)
 
 
 # 3️⃣ Dropdown elementini bul
-dropdown = wait.until(EC.visibility_of_element_located((By.ID, "select-is-admin")))
-
-# 4️⃣ ActionChains ile dropdown sağ yarısına tıkla
-action = ActionChains(driver)
-width = dropdown.size['width']
-height = dropdown.size['height']
-action.move_to_element_with_offset(dropdown, width*0.75, height*0.5).click().perform()
+combo = wait.until(EC.element_to_be_clickable((
+    By.XPATH,
+    "//thead//th[normalize-space()='Durum']//div[@role='combobox' and @aria-haspopup='listbox']"
+)))
+driver.execute_script("arguments[0].click();", combo)
 
 # 5️⃣ Pasif seçeneğini bul
 pasif_option = wait.until(EC.visibility_of_element_located(
